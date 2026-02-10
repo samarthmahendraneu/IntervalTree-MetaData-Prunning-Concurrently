@@ -62,7 +62,7 @@ public:
         right = nullptr;
     }
 
-    void insert(const string& start, const string& end, string file_name) {
+    void insert(const string& start, const string& end, const string& file_name) {
         unique_lock<mutex> lock(m);
         if (this->data.leaf) {
             this->data.start = start;
@@ -90,7 +90,7 @@ public:
         this->data.max_value = max(this->data.max_value, end);
     }
 
-    vector<string> find(string search_key) {
+    vector<string> find(const string& search_key) {
         unique_lock<mutex>  lock(m);
         vector<string> res;
 
@@ -112,7 +112,10 @@ public:
         return res;
     }
 
-    ~Node() = default;
+    ~Node() {
+        delete this->left;
+        delete this->right;
+    };
 
 };
 
@@ -147,7 +150,7 @@ int main() {
         int i = 0;
         while (i<10000) {
             cout<<"daa"<<endl;
-                for (auto x: root->find("daa")) {
+                for (const auto& x: root->find("daa")) {
         cout<<x<<endl;
                     i++;
         }
@@ -160,7 +163,7 @@ int main() {
         int i = 0;
         while (i<10000) {
             cout<<"aba"<<endl;
-for (auto x: root->find("aba")) {
+for (const auto& x: root->find("aba")) {
     cout<<x<<endl;
     i++;
         }
@@ -174,5 +177,7 @@ for (auto x: root->find("aba")) {
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
     cout<<"time taken :"<<duration.count()<<endl;
+
+    delete root;
 
 }
