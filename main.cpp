@@ -61,7 +61,7 @@ class Node {
 Interval data;
 Node* left;
 Node* right;
-mutex m;
+shared_mutex m;
 
 public:
     Node(): data(Interval("", "", "")) {
@@ -70,7 +70,7 @@ public:
     }
 
     void insert(const string& start, const string& end, string file_name) {
-        unique_lock<mutex> lock(m);
+        unique_lock lock(m);
         if (this->data.leaf) {
             this->data.start = start;
             this->data.end = end;
@@ -98,7 +98,7 @@ public:
     }
 
     vector<string> find(string search_key) {
-        unique_lock<mutex>  m;
+        shared_lock  lock(m);
         vector<string> res;
 
         if (this->data.start <= search_key && search_key <= this->data.end) {
